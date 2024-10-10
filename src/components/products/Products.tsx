@@ -21,6 +21,7 @@ function Product(): JSX.Element {
       <>
         <h1> Detalles </h1>
         <p>proveedor: {`${data.data.nameSupplier}`}</p>
+        {data.data.images ? <img src={data.data.images} alt="imagen" /> : <></>}
       </>
     );
   };
