@@ -4,10 +4,16 @@ import { columns } from "./columns.ts";
 import { Products } from "../../interface/Product.ts";
 import { Link } from "react-router-dom";
 import { api } from "../../api/referencie.ts";
+import { useAppDispatch, useAppSelector } from "../../redux/hook.tsx";
+import { addProduct } from "../../redux/slice/ProductSlice.tsx";
 
 function Product(): JSX.Element {
+  const dispatch = useAppDispatch();
   const [data, setData] = React.useState([]);
-  const [selectedRows, setSelectedRows] = React.useState<Products[]>([]);
+  const products = useAppSelector((state) => state.product);
+  React.useEffect(() => {
+    console.log(products);
+  }, [products]);
   React.useEffect(() => {
     api({
       method: "GET",
@@ -26,7 +32,10 @@ function Product(): JSX.Element {
     );
   };
   const handleRowSelected = (state: { selectedRows: Products[] }) => {
-    setSelectedRows(state.selectedRows);
+    const productsI: Products[] = state.selectedRows;
+    for (let i = 0; i < productsI.length; i++) {
+      dispatch(addProduct(productsI[i]));
+    }
   };
   return (
     <div className="w-96">

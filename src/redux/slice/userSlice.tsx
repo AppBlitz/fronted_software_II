@@ -1,10 +1,10 @@
-import { Customer } from "../interface/Customer.ts"
+import { Customer } from "../../interface/Customer.ts";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: Customer = {
   nameCustomer: "",
   email: "",
-  password: ""
+  password: "",
 };
 export const userSlice = createSlice({
   name: "user",
@@ -14,7 +14,7 @@ export const userSlice = createSlice({
       const { email, nameCustomer, password } = action.payload;
       state.nameCustomer = nameCustomer;
       state.email = email;
-      state.password = password
+      state.password = password;
     },
     changeEmail: (state, action) => {
       state.email = action.payload.email;

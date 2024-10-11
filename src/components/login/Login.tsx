@@ -3,7 +3,7 @@ import { api } from "../../api/referencie.ts";
 import { LoginCustomer } from "../../interface/Customer.ts";
 import { useAppDispatch } from "../../redux/hook.tsx";
 import { useForm } from "react-hook-form";
-import { addUser } from "../../redux/UserSlice.tsx";
+import { addUser } from "../../redux/slice/userSlice.tsx";
 const Login = () => {
   const dispatch = useAppDispatch();
   const {
@@ -14,7 +14,7 @@ const Login = () => {
   function customerLogin(customer: LoginCustomer) {
     api({
       method: "POST",
-      url: "",
+      url: "/customers/login",
       data: {
         email: customer.email,
         password: customer.password,

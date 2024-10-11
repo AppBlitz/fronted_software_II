@@ -1,8 +1,9 @@
-import { Product } from "./components/index.ts";
+import { Login } from "./components";
+
 function App() {
   return (
     <>
-      <Product />
+      <Login />
     </>
   );
 }
