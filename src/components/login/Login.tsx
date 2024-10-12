@@ -4,7 +4,10 @@ import { LoginCustomer } from "../../interface/Customer.ts";
 import { useAppDispatch } from "../../redux/hook.tsx";
 import { useForm } from "react-hook-form";
 import { addUser } from "../../redux/slice/userSlice.tsx";
+import { setItem } from "../../utils/localStorag.ts";
+import { useNavigate } from "react-router-dom"
 const Login = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
     register,
@@ -23,11 +26,16 @@ const Login = () => {
       .then((answer) => {
         if (answer != null) {
           dispatch(addUser(answer.data));
+          setItem("user", answer.data);
+          alert("Bienvienvenido ingreso completado")
+          navigate("/product");
         }
       })
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => {
+      })
   }
   return (
     <div className=" w-screen h-screen flex justify-center items-center ">

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RemoveProducts, Products } from "../../interface/Product.ts";
-const initialState: Products[] = [];
+import { getItem } from "../../utils/localStorag.ts";
+const initialState: Products[] = getItem("product") || [];
 export const productSlice = createSlice({
   name: "product",
   initialState,

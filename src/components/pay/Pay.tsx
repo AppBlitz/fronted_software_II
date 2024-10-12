@@ -1,5 +1,7 @@
 const Pay = () => {
-  return <></>;
+  return <>
+    <h1>Perfect</h1>
+  </>;
 };
 
 export { Pay };

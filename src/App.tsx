@@ -1,9 +1,9 @@
-import { Login } from "./components";
+import { CreateProduct } from "./components";
 
 function App() {
   return (
     <>
-      <Login />
+      <CreateProduct />
     </>
   );
 }
