@@ -1,9 +1,9 @@
-import { CreateProduct } from "./components";
+import { Profile } from "./components";
 
 function App() {
   return (
     <>
-      <CreateProduct />
+      <Profile />
     </>
   );
 }
