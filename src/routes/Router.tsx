@@ -1,5 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
-import { CreateProduct, Login, Pay, Product } from "../components/index.ts";
+import {
+  CreateProduct,
+  Login,
+  Pay,
+  Product,
+  Profile,
+} from "../components/index.ts";
 import App from "../App";
 const router = createBrowserRouter([
   {
@@ -16,11 +22,15 @@ const router = createBrowserRouter([
   },
   {
     path: "/create/product",
-    element: <CreateProduct />
+    element: <CreateProduct />,
   },
   {
     path: "/product",
-    element: <Product />
-  }
+    element: <Product />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
 ]);
 export { router };

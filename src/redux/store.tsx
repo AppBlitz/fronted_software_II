@@ -1,10 +1,10 @@
-import userReducer from "./UserSlice.tsx"
+import {userSlice} from "./slice"
 import productReducer from "./ProductSlice.tsx"
 import { configureStore } from "@reduxjs/toolkit"
 
 const store = configureStore({
   reducer: {
-    user: userReducer,
+    user: userSlice.reducer,
     products: productReducer
   }
 })

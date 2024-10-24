@@ -9,5 +9,8 @@ interface Products {
   amountForProduct: number;
   stateProduct: string;
 }
+interface RemoveProducts {
+  id: number | string;
+}
 
-export type { Products };
+export type { Products, RemoveProducts };
