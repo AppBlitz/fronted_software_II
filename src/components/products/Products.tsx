@@ -1,71 +1,79 @@
 import React from "react";
 import DataTable, { ExpanderComponentProps } from "react-data-table-component";
 import { columns } from "./columns.ts";
-import { Products } from "../../interface/Product.ts"
+import { Products } from "../../interface/Product.ts";
 import { api } from "../../api/referencie.ts";
-import {addProduct} from "../../redux/ProductSlice.tsx";
+import { addProduct } from "../../redux/ProductSlice.tsx";
 import { useAppDispatch } from "../../redux/hook.tsx";
 
 function Product(): JSX.Element {
-    const [data, setData] = React.useState([]);
-    const [selectedRows, setSelectedRows] = React.useState<Products[]>([]);
+  const [data, setData] = React.useState([]);
+  const [selectedRows, setSelectedRows] = React.useState<Products[]>([]);
 
-    const dispatch = useAppDispatch();
-
-    React.useEffect(() => {
+  const dispatch = useAppDispatch();
+  React.useEffect(() => {
     api({
       method: "GET",
       url: "/products/all",
     }).then((answer) => setData(answer.data));
   }, []);
-    const ExpandableRowComponent: React.FC<ExpanderComponentProps<Products>> = (
-    data,
-  ) => {
+
+  const ExpandableRowComponent: React.FC<ExpanderComponentProps<Products>> = ({ data }) => {
     return (
-      <>
-        <h1> Detalles </h1>
-        <p>proveedor: {`${data.data.nameSupplier}`}</p>
-      </>
+      <div className="p-4 border-t border-gray-200">
+        <h1 className="text-lg font-semibold">Detalles</h1>
+        <p className="text-gray-600">Proveedor: {data.nameSupplier}</p>
+      </div>
     );
   };
-    const handleRowSelected = (state: { selectedRows: Products[] }) => {
+
+  const handleRowSelected = (state: { selectedRows: Products[] }) => {
     setSelectedRows(state.selectedRows);
   };
 
   const handleSaveRowSelected = () => {
-      if(selectedRows.length > 0){
-          selectedRows.forEach(product => {
-              dispatch(addProduct(product));
+    if (selectedRows.length > 0) {
+      selectedRows.forEach((product) => {
+        dispatch(addProduct(product));
       });
-          setSelectedRows([]);
-  }
-
-  }
+      setSelectedRows([]);
+    }
+  };
   return (
-      <div className="w-96">
-          <DataTable
-              title={"products"}
-              columns={columns}
-              data={data}
-              pagination
-              paginationPerPage={5}
-              selectableRows
-              onSelectedRowsChange={handleRowSelected}
-              expandableRows
-              expandableRowsComponent={ExpandableRowComponent}
-              fixedHeader
+    <div className="min-h-screen bg-gradient-to-r from-blue-200 to-blue-500 p-6 flex items-center justify-center">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-4 transition-transform transform hover:scale-105">
+        <h1 className="text-xl font-bold mb-4">Productos</h1>
+        <DataTable
+          title=""
+          columns={columns}
+          data={data}
+          pagination
+          paginationPerPage={5}
+          selectableRows
+          onSelectedRowsChange={handleRowSelected}
+          expandableRows
+          expandableRowsComponent={ExpandableRowComponent}
+          fixedHeader
+          className="mb-4"
+        />
+        <p className="text-gray-700 mb-2">Filas seleccionadas: {selectedRows.length}</p>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Cantidad:</label>
+          <input
+            type="text"
+            placeholder="Cantidad"
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-400 transition duration-200"
           />
-          <p>Selected rows: {selectedRows.length}</p>
-          <br/>
-          <div>
-
-              <label> Cantidad: </label>
-              <input type="text" placeholder=" cantidad "/>
-          <br/>
-          </div>
-          <button onClick={handleSaveRowSelected}>Agregar al pedido</button>
+        </div>
+        <button
+          onClick={handleSaveRowSelected}
+          className="w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700 transition duration-200 transform hover:scale-105"
+        >
+          Agregar al pedido
+        </button>
       </div>
+    </div>
   );
 }
 
-export {Product};
+export { Product };

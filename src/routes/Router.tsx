@@ -5,6 +5,8 @@ import {
   Pay,
   Product,
   Profile,
+  UpdateProduct,
+  CreateUser,
 } from "../components/index.ts";
 import App from "../App";
 const router = createBrowserRouter([
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/update/produt",
+    element: <UpdateProduct />,
+  },
+  {
+    path: "/create/user",
+    element: <CreateUser />,
   },
 ]);
 export { router };
