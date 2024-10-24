@@ -68,5 +68,4 @@ function Product(): JSX.Element {
   );
 }
 
-
 export {Product};
