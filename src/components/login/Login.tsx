@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { addUser } from "../../redux/slice/userSlice.tsx";
 import { setItem } from "../../utils/localStorag.ts";
 import { useNavigate } from "react-router-dom"
+
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -27,7 +28,8 @@ const Login = () => {
         if (answer != null) {
           dispatch(addUser(answer.data));
           setItem("user", answer.data);
-          alert("Bienvienvenido ingreso completado")
+
+          alert("¡Bienvenido! Ingreso completado");
           navigate("/product");
         }
       })
@@ -47,6 +49,7 @@ const Login = () => {
             <Input
               type="email"
               className="border border-sky-500 "
+
               {...register("email", {
                 required: true,
                 pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/i,
@@ -66,6 +69,7 @@ const Login = () => {
             <label>Contraseña</label>
             <Input
               className="border border-sky-500"
+
               {...register("password", {
                 required: true,
                 minLength: 8,
@@ -79,6 +83,7 @@ const Login = () => {
             )}
           </div>
           <button className="w-full  bg-sky-400 rounded-full min-w-4 max-w-full hover:bg-purple-600 cursor-pointer">
+
             Acceder
           </button>
         </form>
@@ -86,4 +91,5 @@ const Login = () => {
     </div>
   );
 };
+
 export { Login };

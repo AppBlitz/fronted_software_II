@@ -8,10 +8,18 @@ interface Customer {
   image: string;
 }
 
+interface createCustomer {
+  nameCustomer: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  numberIdentification: string;
+  image: string;
+}
 
 interface LoginCustomer {
   email: string;
   password: string;
 }
 
-export type { Customer, LoginCustomer };
+export type { Customer, LoginCustomer, createCustomer };
