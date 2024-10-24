@@ -1,9 +1,8 @@
-import { Profile } from "./components";
-
+import { Table } from "./components/index.ts";
 function App() {
   return (
     <>
-      <Profile />
+      <Table />
     </>
   );
 }
