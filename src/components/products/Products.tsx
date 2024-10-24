@@ -1,68 +1,71 @@
 import React from "react";
 import DataTable, { ExpanderComponentProps } from "react-data-table-component";
 import { columns } from "./columns.ts";
-import { Products } from "../../interface/Product.ts";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/hook.tsx";
-import { addProduct } from "../../redux/slice/ProductSlice.tsx";
-import { setItem } from "../../utils/localStorag.ts";
-import { fetchProducts, getProducts } from "../../utils/products.ts";
+import { Products } from "../../interface/Product.ts"
+import { api } from "../../api/referencie.ts";
+import {addProduct} from "../../redux/ProductSlice.tsx";
+import { useAppDispatch } from "../../redux/hook.tsx";
 
 function Product(): JSX.Element {
-  const dispatch = useAppDispatch();
-  const [data, setData] = React.useState<Products[]>([]);
-  const products = useAppSelector((state) => state.product);
+    const [data, setData] = React.useState([]);
+    const [selectedRows, setSelectedRows] = React.useState<Products[]>([]);
 
-  React.useEffect(() => {
-    setItem("product", products);
-  }, [products]);
+    const dispatch = useAppDispatch();
 
-  fetchProducts().then(() => {
-    setData(getProducts());
-  });
-  const stateProduct = (data: string) => {
-    if (data === "ASSET") {
-      return "Activo";
-    } else {
-      return "Inactivo";
-    }
-  };
-  const ExpandableRowComponent: React.FC<ExpanderComponentProps<Products>> = (
+    React.useEffect(() => {
+    api({
+      method: "GET",
+      url: "/products/all",
+    }).then((answer) => setData(answer.data));
+  }, []);
+    const ExpandableRowComponent: React.FC<ExpanderComponentProps<Products>> = (
     data,
   ) => {
     return (
       <>
         <h1> Detalles </h1>
         <p>proveedor: {`${data.data.nameSupplier}`}</p>
-        {data.data.images ? <img src={data.data.images} alt="imagen" /> : <></>}
-        <p>Estado: {stateProduct(data.data.stateProduct)}</p>
       </>
     );
   };
-  const handleRowSelected = (state: { selectedRows: Products[] }) => {
-    const productsI: Products[] = state.selectedRows;
-    for (let i = 0; i < productsI.length; i++) {
-      dispatch(addProduct(productsI[i]));
-    }
+    const handleRowSelected = (state: { selectedRows: Products[] }) => {
+    setSelectedRows(state.selectedRows);
   };
 
+  const handleSaveRowSelected = () => {
+      if(selectedRows.length > 0){
+          selectedRows.forEach(product => {
+              dispatch(addProduct(product));
+      });
+          setSelectedRows([]);
+  }
+
+  }
   return (
-    <div>
-      <DataTable
-        title={"products"}
-        columns={columns}
-        data={data}
-        pagination
-        paginationPerPage={5}
-        selectableRows
-        onSelectedRowsChange={handleRowSelected}
-        expandableRows
-        expandableRowsComponent={ExpandableRowComponent}
-        fixedHeader
-      />
-      <Link to={"/pay"}>Comprar</Link>
-    </div>
+      <div className="w-96">
+          <DataTable
+              title={"products"}
+              columns={columns}
+              data={data}
+              pagination
+              paginationPerPage={5}
+              selectableRows
+              onSelectedRowsChange={handleRowSelected}
+              expandableRows
+              expandableRowsComponent={ExpandableRowComponent}
+              fixedHeader
+          />
+          <p>Selected rows: {selectedRows.length}</p>
+          <br/>
+          <div>
+
+              <label> Cantidad: </label>
+              <input type="text" placeholder=" cantidad "/>
+          <br/>
+          </div>
+          <button onClick={handleSaveRowSelected}>Agregar al pedido</button>
+      </div>
   );
 }
 
-export { Product };
+export {Product};
