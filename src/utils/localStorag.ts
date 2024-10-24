@@ -1,4 +1,3 @@
-
 const getItem = <T>(key: string): T | null => {
   return JSON.parse(localStorage.getItem(key)!)
 }
