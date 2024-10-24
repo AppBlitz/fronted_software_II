@@ -7,13 +7,27 @@ import React from "react";
 import {Products} from "../../interface/Product.ts";
 import {api} from "../../api/referencie.ts";
 import {useNavigate} from "react-router-dom";
+import { Input } from "@nextui-org/react";
+import { useAppDispatch } from "../../redux/hook.tsx";
+import { useForm } from "react-hook-form";
+import {Order} from "../../interface/Order.ts"
+import TipoPedidoSelect from "./TypeOrderSelect.tsx"
+
 
 const Table =()=>{
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const products = useSelector(selectProducts);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+      } = useForm<Order>();
 
     const [data, setData] = React.useState<Products[]>([]);
     const [selectedRows, setSelectedRows] = React.useState<Products[]>([]);
 
-    const products = useSelector(selectProducts)
 
     React.useEffect(() => {
         setData(products);
@@ -35,40 +49,33 @@ const Table =()=>{
 
     function calcularTotal() {
         let monto = 0;
-        if(selectedRows.length > 0){
+
             products.forEach(product => {
                 monto += product.priceProduct;
             });
             setSelectedRows([]);
-        }
+        
         // Realiza el cálculo del total aquí
         // Puedes acceder al valor del campo de texto usando "monto"
         // Por ejemplo, si el total es el monto * 1.1
         const total = monto * 1;
         alert("El total es: " + total);
     }
-        const navigate = useNavigate();
-    function order(){
+
+    
+    function order(pedido: Order){
     api({
         method: "POST",
         url: "/pedidos/guardarpedido",
         data: {
-        /*    "total":  // Calcular el total
-            "tipo": , // Establecer el tipo de pedido
-            "direccion": "Dirección del pedido", // Establecer la dirección
-            "hora": "2023-10-10T12:00:00", // Ejemplo de hora, deberías reemplazarlo por LocalDateTime.now()
-            "estado": "ACTIVE", // Estado inicial del pedido
-            "DetailProduct": [
-                {
-                    "nameProduct": data.nameProduct, // Nombre del producto
-                    "nameSupplier": data.nameSupplier, // Nombre del proveedor
-                    "priceProduct": data.priceProduct, // Precio del producto
-                    "images": data.images, // Imágenes del producto
-                    "stateProduct": "ASSET", // Estado del producto
-                    "amountProducts": data.amountProduct, // Cantidad de productos
-                    "amountMinProduct": data.amountMinProduct // Cantidad mínima de productos
-                }
-            ]*/
+            "fecha": pedido.fecha,
+            "total": pedido.total,
+            "tipo": TipoPedidoSelect.name,
+            "direccion": pedido.direccion,
+            "hora": pedido.hora,
+            "estado": "EN_PROCESO",
+            "DetailProduct": pedido.DetailProduct
+
         },
     }).then(() => {
         alert("orden agregada con exito");
@@ -79,6 +86,7 @@ const Table =()=>{
         <div>
             <Product/>
             <br/>
+            <form onSubmit={handleSubmit(order)}>
             <div style={{display: 'flex'}}>
                 <div className="w-96">
                     <DataTable
@@ -96,35 +104,42 @@ const Table =()=>{
                     <p>Selected rows: {selectedRows.length}</p>
                 </div>
                 <div style={{marginLeft: '20px'}}>
-                    <div>
-                        <select>
-                            <option> TipoPedido </option>
-                        </select>
-                        <br/>
-                        <br/>
-                        <div>
-                            <label>Direccion: </label>
-                            <input type="text" placeholder=" dirección"/>
-                        </div>
-                        <div>
-                            <label>Hora: </label>
-                            <input type="text" placeholder=" hora"/>
-                        </div>
-                        <br/>
-                        <div>
-                            <label>Name: </label>
-                            <input type="text" placeholder=" cedula"/>
-                        </div>
+                <div>
+                <TipoPedidoSelect/>
+                <br />
+                <br />
+            
+                <div>
+                  <label>Direccion: </label>
+                  <Input
+                    type="text"
+                    placeholder=" dirección"
+                    {...register("direccion")}
+                  />
+                </div>
+                <div>
+                  <label>Hora: </label>
+                  <Input
+                    type="text"
+                    placeholder=" hora"
+                    {...register("hora")}
+                  />
+                </div>
+                <br />
+                
                     </div>
                 </div>
+                
             </div>
             <div>
-                <input id="monto" type="text" placeholder="Monto"/>
-                <button onClick={calcularTotal} >Calcular Total</button>
+                <button onClick={calcularTotal} {...register("total")} >Calcular Total</button>
             </div>
+            
             <br/>
-            <button onClick={order}>Guardar</button>
+            <button> Guardar</button>
+            </form>
         </div>
+        
     );
 }
 export {Table}

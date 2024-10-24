@@ -25,3 +25,28 @@ const columns: TableColumn<Products>[] = [
 ];
 
 export { columns };
+
+const columns2: TableColumn<Products>[] = [
+  {
+    name: "Nombre product",
+    selector: (row) => row.nameProduct,
+    sortable: true,
+  },
+  {
+    name: "Precio",
+    selector: (row) => row.priceProduct,
+    sortable: true,
+  },
+  {
+    name: "cantidad",
+    selector: (row) => row.amountProduct,
+    sortable: true,
+  },
+  {
+    name: "Disponible",
+    selector: (row) => row.amountProduct,
+    sortable: true,
+  },
+];
+
+export { columns2 };
