@@ -1,8 +1,8 @@
-import { UpdateProduct } from "./components/index.ts";
+import { Product } from "./components/index.ts";
 function App() {
   return (
     <>
-      <UpdateProduct />
+      <Product />
     </>
   );
 }
