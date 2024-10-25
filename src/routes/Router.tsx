@@ -7,6 +7,7 @@ import {
   Profile,
   UpdateProduct,
   CreateUser,
+  Table
 } from "../components/index.ts";
 import App from "../App";
 const router = createBrowserRouter([
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: "/update/produt",
     element: <UpdateProduct />,
+  },
+  {
+    path: "/pedido",
+    element: <Table />,
   },
   {
     path: "/create/user",
