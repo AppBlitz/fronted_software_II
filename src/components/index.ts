@@ -4,5 +4,5 @@ export { Pay } from "./pay/Pay.tsx";
 export { CreateProduct } from "./createProducts/CreateProducts.tsx";
 export { Profile } from "./profile/Profile.tsx";
 export { Table } from "./realizeOrder/realizeOrder.tsx";
-export { UpdateProduct } from "./createProducts/updateProduct.tsx";
 export { CreateUser } from "./userCreate/userCreate.tsx";
+export { UpdateProduct } from "./updateProduct/updateProduct.tsx";

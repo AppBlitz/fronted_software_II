@@ -3,7 +3,6 @@ import {
   CreateProduct,
   Login,
   Pay,
-  Product,
   Profile,
   UpdateProduct,
   CreateUser,
@@ -27,15 +26,11 @@ const router = createBrowserRouter([
     element: <CreateProduct />,
   },
   {
-    path: "/product",
-    element: <Product />,
-  },
-  {
     path: "/profile",
     element: <Profile />,
   },
   {
-    path: "/update/produt",
+    path: "/update/product",
     element: <UpdateProduct />,
   },
   {
