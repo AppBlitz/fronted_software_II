@@ -36,7 +36,7 @@ const UpdateProduct: React.FC = () => {
     if (selectedProduct) {
       api({
         method: "PUT",
-        url: `/products/update/${selectedProduct.id}`,
+        url: `/products/product/update`,
         data: selectedProduct,
       })
         .then((response) => {
@@ -47,7 +47,20 @@ const UpdateProduct: React.FC = () => {
         });
     }
   };
-
+  const deleteProduct = () => {
+    if (selectedProduct) {
+      api({
+        method: "DELETE",
+        url: `/products/delete/${selectedProduct.id}`,
+      })
+        .then((answer) => {
+          console.log(answer.data)
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+  }
   useEffect(() => {
     api({
       method: "GET",
@@ -102,6 +115,7 @@ const UpdateProduct: React.FC = () => {
           >
             Update Product
           </button>
+          <button onClick={deleteProduct}>Elimiar producto</button>
         </div>
       )}
     </div>
