@@ -11,7 +11,7 @@ import { Input } from "@nextui-org/react";
 import { useAppDispatch } from "../../redux/hook.tsx";
 import { useForm } from "react-hook-form";
 import { Order } from "../../interface/Order.ts"
-import TipoPedidoSelect from "./TypeOrderSelect.tsx"
+import { useState } from 'react';
 
 
 const Table = () => {
@@ -27,7 +27,17 @@ const Table = () => {
 
     const [data, setData] = React.useState<Products[]>([]);
     const [selectedRows, setSelectedRows] = React.useState<Products[]>([]);
-
+    const [total, setTotal] = React.useState<number>(0);
+    const [tipoPedido, setTipoPedido] = useState('');
+      
+        const opcionesTipoPedido = [
+          { value: 'envio', label: 'envio' },
+          { value: 'entrega', label: 'entrega' },
+        ];
+      
+        const manejarCambio = (event: React.ChangeEvent<HTMLSelectElement>) => {
+          setTipoPedido(event.target.value);
+        };
 
     React.useEffect(() => {
         setData(products);
@@ -50,95 +60,108 @@ const Table = () => {
     function calcularTotal() {
         let monto = 0;
 
-        products.forEach(product => {
-            monto += product.priceProduct*product.amountProduct;
+        products.forEach((product) => {
+            monto += product.priceProduct * product.amountProduct;
         });
-        setSelectedRows([]);
 
-        const total = monto ;
-        alert("El total es: " + total);
+        setTotal(monto); // Guardar el total en el estado
+        return monto;
     }
 
 
     function order(pedido: Order) {
+        const now = new Date();
         api({
             method: "POST",
-            url: "/pedidos/guardarpedido",
+            url: "/pedidos/guardarPedido",
             data: {
-                "fecha": pedido.fecha,
-                "total": pedido.total,
-                "tipo": TipoPedidoSelect.name,
+                "fecha": new Date().toISOString().split('T')[0],
+                "total": total,
+                "tipo": tipoPedido,
                 "direccion": pedido.direccion,
-                "hora": pedido.hora,
-                "estado": "EN_PROCESO",
-                "DetailProduct": pedido.DetailProduct
+                "hora": now.toLocaleString('sv-SE', { timeZoneName: 'short' }).replace(' ', 'T').replace(/T\d\d:\d\d:\d\d.*/, 'T' + now.toTimeString().substring(0, 8)),
+
+                "estado": "UNDELIVERED",
+                "DetailProduct": products,
 
             },
         }).then(() => {
             alert("orden agregada con exito");
-            navigate("/pedidos");
+            navigate("/pedido");
         });
     }
 
     return (
-<div>
-    <Product />
-    <br />
-    <form onSubmit={handleSubmit(order)}>
-        <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <div className="min-h-screen bg-gradient-to-r from-blue-200 to-blue-500 p-6 flex items-center justify-center">
-                <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-4 transition-transform transform hover:scale-105">
-                    <h1 className="text-xl font-bold mb-4">Productos</h1>
-                    <DataTable
-                        title=""
-                        columns={columns}
-                        data={data}
-                        pagination
-                        paginationPerPage={5}
-                        selectableRows
-                        onSelectedRowsChange={handleRowSelected}
-                        expandableRows
-                        expandableRowsComponent={ExpandableRowComponent}
-                        fixedHeader
-                        className="mb-4"
-                    />
-                    <p className="text-gray-700 mb-2">Filas seleccionadas: {selectedRows.length}</p>
+        <div>
+            <Product />
+
+            <br />
+
+            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <div className="min-h-screen bg-gradient-to-r from-blue-200 to-blue-500 p-6 flex items-center justify-center">
+                    <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-4 transition-transform transform hover:scale-105">
+                        <h1 className="text-xl font-bold mb-4">Productos</h1>
+                        <DataTable
+                            title=""
+                            columns={columns}
+                            data={data}
+                            pagination
+                            paginationPerPage={5}
+                            selectableRows
+                            onSelectedRowsChange={handleRowSelected}
+                            expandableRows
+                            expandableRowsComponent={ExpandableRowComponent}
+                            fixedHeader
+                            className="mb-4"
+                        />
+                        <div>
+                            <button onClick={calcularTotal} >Calcular Total</button>
+                            <div><span style={{ marginLeft: '10px' }}> Total: ${total}</span></div>
+                        </div>
+                        <p className="text-gray-700 mb-2">Filas seleccionadas: {selectedRows.length}</p>
+                    </div>
+                </div>
+
+                <div style={{ marginLeft: '20px', flex: 1 }}>
+                    
+                    <div className="min-h-screen bg-gradient-to-r from-blue-200 to-blue-500 p-6 flex items-center justify-center">
+                        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-4 transition-transform transform hover:scale-105">
+                            <h1 className="text-xl font-bold mb-4">detalles Pedido</h1>
+                            <div>
+                                <div>
+                                    <label htmlFor="tipo-pedido">Tipo de Pedido:</label>
+                                    <select id="tipo-pedido" value={tipoPedido} onChange={manejarCambio}>
+                                        <option value="">Seleccione un tipo de pedido</option>
+                                        {opcionesTipoPedido.map((opcion) => (
+                                            <option key={opcion.value} value={opcion.value}>
+                                                {opcion.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    { }
+                                    {tipoPedido && <p>Tipo de pedido seleccionado: {tipoPedido}</p>}
+                                </div>
+                                <br />
+                                <br />
+                                <form onSubmit={handleSubmit(order)}>
+                                    <div>
+                                        <label>Direccion: </label>
+                                        <Input
+                                            type="text"
+                                            placeholder=" dirección"
+                                            {...register("direccion")}
+                                        />
+                                    </div>
+                                    <br />
+                                    <button onClick={calcularTotal}>Guardar</button>
+                                </form>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div style={{ marginLeft: '20px', flex: 1 }}>
-                <p>Selected rows: {selectedRows.length}</p>
-                <br />
-                <div>
-                    <TipoPedidoSelect />
-                    <br />
-                    <br />
-                    <div>
-                        <label>Direccion: </label>
-                        <Input
-                            type="text"
-                            placeholder=" dirección"
-                            {...register("direccion")}
-                        />
-                    </div>
-                    <div>
-                        <label>Hora: </label>
-                        <Input
-                            type="text"
-                            placeholder=" hora"
-                            {...register("hora")}
-                        />
-                    </div>
-                    <br />
-                </div>
-                <div>
-                    <button onClick={calcularTotal} {...register("total")}>Calcular Total</button>
-                </div>
-                <br />
-                <button>Guardar</button>
-            </div>
-        </div>
-    </form>
-</div>);
+        </div>);
 }
-                    export {Table}
+export { Table }
