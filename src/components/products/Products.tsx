@@ -90,13 +90,27 @@ function Product(): JSX.Element {
     if (selectedRows.length > 0) {
       const selectedQuantity = Number(quantity);
 
+              // Verificar si la cantidad solicitada es mayor que la cantidad disponible
+              const hasExceedingQuantity = selectedRows.some((row) => {
+                const product = data.find((prod) => prod.id === row.id);
+                return selectedQuantity > (product?.amountProduct || 0);
+            });
+    
+            // Si alguna cantidad solicitada excede el stock, mostrar un mensaje y no continuar
+            if (hasExceedingQuantity) {
+                alert("La cantidad solicitada supera la cantidad disponible para uno o más productos.");
+                return; // Detener la ejecución si hay cantidades que exceden
+            }
+
       data.map((product) => {
         if (selectedRows.some((row) => row.id === product.id)) {
+         
           const newAmountProduct =selectedQuantity;
           product.amountForProduct = product.amountProduct;
           product.amountProduct = newAmountProduct >= 0 ? newAmountProduct : 0; // Descontar cantidad
 
           dispatch(addProduct(product)); // Agregar a la tabla de pedido
+         
         }
         return product;
       });
@@ -107,8 +121,10 @@ function Product(): JSX.Element {
         // Crear una copia de cada producto seleccionado y actualizar `amountProduct`
         const updatedProduct = { ...product };
         if (selectedRows.some((row) => row.id === product.id)) {
-          const newAmountProduct = updatedProduct.amountForProduct - selectedQuantity;
-          updatedProduct.amountProduct = newAmountProduct >= 0 ? newAmountProduct :0;
+          
+            const newAmountProduct = updatedProduct.amountForProduct - selectedQuantity;
+            updatedProduct.amountProduct = newAmountProduct >= 0 ? newAmountProduct :0;
+          
           
         }
         return updatedProduct;
