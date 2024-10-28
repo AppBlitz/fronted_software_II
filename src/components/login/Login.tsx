@@ -30,7 +30,7 @@ const Login = () => {
           setItem("user", answer.data);
 
           alert("¡Bienvenido! Ingreso completado");
-          navigate("/product");
+          navigate("/");
         }
       })
       .catch((error) => {
@@ -87,6 +87,8 @@ const Login = () => {
             Acceder
           </button>
         </form>
+        <br />
+        <button className="w-full bg-sky-500 rounded-full min-w-4 max-w-full hover:bg-purple-500 cursor-pointer" onClick={() => navigate("/profile")}>Perfil</button>
       </div>
     </div>
   );

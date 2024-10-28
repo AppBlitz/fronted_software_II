@@ -7,10 +7,11 @@ import { addProduct } from "../../redux/ProductSlice.tsx";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "../../redux/hook.tsx";
 import { Input } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom";
 
 function Product(): JSX.Element {
+  const navigate = useNavigate();
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm<Products>();
@@ -70,7 +71,9 @@ function Product(): JSX.Element {
       });
   }, []);
 
-  const ExpandableRowComponent: React.FC<ExpanderComponentProps<Products>> = (data) => {
+  const ExpandableRowComponent: React.FC<
+    ExpanderComponentProps<Products>
+  > = () => {
     return (
       <div className="p-4 border-t border-gray-200">
         <h1 className="text-lg font-semibold">Detalles</h1>
@@ -90,49 +93,48 @@ function Product(): JSX.Element {
     if (selectedRows.length > 0) {
       const selectedQuantity = Number(quantity);
 
-              // Verificar si la cantidad solicitada es mayor que la cantidad disponible
-              const hasExceedingQuantity = selectedRows.some((row) => {
-                const product = data.find((prod) => prod.id === row.id);
-                return selectedQuantity > (product?.amountProduct || 0);
-            });
-    
-            // Si alguna cantidad solicitada excede el stock, mostrar un mensaje y no continuar
-            if (hasExceedingQuantity) {
-                alert("La cantidad solicitada supera la cantidad disponible para uno o más productos.");
-                return; // Detener la ejecución si hay cantidades que exceden
-            }
+      // Verificar si la cantidad solicitada es mayor que la cantidad disponible
+      const hasExceedingQuantity = selectedRows.some((row) => {
+        const product = data.find((prod) => prod.id === row.id);
+        return selectedQuantity > (product?.amountProduct || 0);
+      });
+
+      // Si alguna cantidad solicitada excede el stock, mostrar un mensaje y no continuar
+      if (hasExceedingQuantity) {
+        alert(
+          "La cantidad solicitada supera la cantidad disponible para uno o más productos.",
+        );
+        return; // Detener la ejecución si hay cantidades que exceden
+      }
 
       data.map((product) => {
         if (selectedRows.some((row) => row.id === product.id)) {
-         
-          const newAmountProduct =selectedQuantity;
+          const newAmountProduct = selectedQuantity;
           product.amountForProduct = product.amountProduct;
           product.amountProduct = newAmountProduct >= 0 ? newAmountProduct : 0; // Descontar cantidad
 
           dispatch(addProduct(product)); // Agregar a la tabla de pedido
-         
         }
         return product;
       });
 
       setSelectedRows([]); // Limpiar selección
-      
+
       const updatedProducts = data.map((product) => {
         // Crear una copia de cada producto seleccionado y actualizar `amountProduct`
         const updatedProduct = { ...product };
         if (selectedRows.some((row) => row.id === product.id)) {
-          
-            const newAmountProduct = updatedProduct.amountForProduct - selectedQuantity;
-            updatedProduct.amountProduct = newAmountProduct >= 0 ? newAmountProduct :0;
-          
-          
+          const newAmountProduct =
+            updatedProduct.amountForProduct - selectedQuantity;
+          updatedProduct.amountProduct =
+            newAmountProduct >= 0 ? newAmountProduct : 0;
         }
         return updatedProduct;
       });
 
       // Actualizar el estado de `data` con las cantidades modificadas
       setData(updatedProducts);
-      setSelectedRows([]); 
+      setSelectedRows([]);
     }
   };
 
@@ -153,7 +155,9 @@ function Product(): JSX.Element {
           fixedHeader
           className="mb-4"
         />
-        <p className="text-gray-700 mb-2">Filas seleccionadas: {selectedRows.length}</p>
+        <p className="text-gray-700 mb-2">
+          Filas seleccionadas: {selectedRows.length}
+        </p>
         <div className="mb-4">
           <form onSubmit={handleSubmit(handleSaveRowSelected)}>
             <div>
@@ -170,6 +174,14 @@ function Product(): JSX.Element {
                 className="w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700 transition duration-200 transform hover:scale-105"
               >
                 Agregar al pedido
+              </button>
+              <br />
+              <br />
+              <button
+                className="w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700 transition duration-200 transform hover:scale-105"
+                onClick={() => navigate("/update/product")}
+              >
+                Actualizar producto
               </button>
             </div>
           </form>
