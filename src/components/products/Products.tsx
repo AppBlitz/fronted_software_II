@@ -7,10 +7,11 @@ import { addProduct } from "../../redux/ProductSlice.tsx";
 import { useForm } from "react-hook-form";
 import { useAppDispatch } from "../../redux/hook.tsx";
 import { Input } from "@nextui-org/react";
+import { useNavigate } from "react-router-dom"
 
 function Product(): JSX.Element {
+  const navigate = useNavigate();
   const {
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm<Products>();
@@ -92,7 +93,7 @@ function Product(): JSX.Element {
 
       data.map((product) => {
         if (selectedRows.some((row) => row.id === product.id)) {
-          const newAmountProduct =selectedQuantity;
+          const newAmountProduct = selectedQuantity;
           product.amountForProduct = product.amountProduct;
           product.amountProduct = newAmountProduct >= 0 ? newAmountProduct : 0; // Descontar cantidad
 
@@ -102,21 +103,21 @@ function Product(): JSX.Element {
       });
 
       setSelectedRows([]); // Limpiar selección
-      
+
       const updatedProducts = data.map((product) => {
         // Crear una copia de cada producto seleccionado y actualizar `amountProduct`
         const updatedProduct = { ...product };
         if (selectedRows.some((row) => row.id === product.id)) {
           const newAmountProduct = updatedProduct.amountForProduct - selectedQuantity;
-          updatedProduct.amountProduct = newAmountProduct >= 0 ? newAmountProduct :0;
-          
+          updatedProduct.amountProduct = newAmountProduct >= 0 ? newAmountProduct : 0;
+
         }
         return updatedProduct;
       });
 
       // Actualizar el estado de `data` con las cantidades modificadas
       setData(updatedProducts);
-      setSelectedRows([]); 
+      setSelectedRows([]);
     }
   };
 
@@ -156,6 +157,8 @@ function Product(): JSX.Element {
                 Agregar al pedido
               </button>
             </div>
+            <br />
+            <button onClick={() => navigate("/update/product")} className="w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700 transition duration-200 transform hover:scale-105">Actualizar producto</button>
           </form>
         </div>
       </div>
